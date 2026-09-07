@@ -8,7 +8,7 @@
 // ============================================
 
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext.jsx';
 import { register, emailLogin } from '../../services/authService.js';
 import {
@@ -31,7 +31,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useContext(AuthContext);
+  const { login, user, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Handle form submission - Reference: async/await - reference-javascript.md
@@ -50,7 +50,7 @@ function LoginPage() {
       }
 
       login(result.token, result.user);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       const message =
         error.response?.data?.message || 'Something went wrong';
@@ -59,6 +59,14 @@ function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return null;
+  }
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="login-page">

@@ -2,9 +2,17 @@ export const parseGeminiJSON = (text) => {
   try {
     let cleanText = text.trim();
 
-    if (cleanText.startsWith('```')) {
-      cleanText = cleanText.replace(/^```(?:json)?\s*\n?/, '');
-      cleanText = cleanText.replace(/\n?```\s*$/, '');
+    // Check if there is a json markdown code block anywhere
+    const match = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (match) {
+      cleanText = match[1];
+    } else {
+      // If no code fence, extract substring from first JSON bracket to last bracket
+      const firstBracket = cleanText.search(/[\[\{]/);
+      const lastBracket = Math.max(cleanText.lastIndexOf('}'), cleanText.lastIndexOf(']'));
+      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        cleanText = cleanText.substring(firstBracket, lastBracket + 1);
+      }
     }
 
     return JSON.parse(cleanText.trim());

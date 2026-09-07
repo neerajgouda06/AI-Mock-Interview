@@ -7,8 +7,8 @@
 //   3. Starts the Express server
 // ============================================
 
-// Load environment variables FIRST (before anything else uses them)
-import "dotenv/config";
+// Load environment variables FIRST before any other imports evaluate
+import "./src/config/env.config.js";
 
 // Import our configured Express app
 import app from "./src/app.js";
