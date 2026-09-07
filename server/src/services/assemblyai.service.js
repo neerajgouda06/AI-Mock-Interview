@@ -18,8 +18,10 @@ const getAssemblyAIClient = () => {
 };
 
 export const transcribeAudio = async (audioBuffer, originalName) => {
-  const extension = path.extname(originalName) || '.webm';
-  const tempPath = path.join(os.tmpdir(), `interview-audio-${Date.now()}${extension}`);
+  const allowedExtensions = ['.webm', '.wav', '.mp3', '.m4a', '.ogg', '.aac', '.flac'];
+  let rawExt = path.extname(originalName || '').toLowerCase();
+  const extension = allowedExtensions.includes(rawExt) ? rawExt : '.webm';
+  const tempPath = path.join(os.tmpdir(), `interview-audio-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${extension}`);
 
   try {
     fs.writeFileSync(tempPath, audioBuffer);

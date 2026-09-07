@@ -16,14 +16,21 @@ export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (typeof name !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, message: 'Invalid input format.' });
+    }
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanName || !cleanEmail || !password) {
       return res.status(400).json({ success: false, message: 'Name, email, and password are required.' });
     }
     if (password.length < 6) {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
     }
 
-    const result = await authService.register(name, email, password);
+    const result = await authService.register(cleanName, cleanEmail, password);
     return res.status(201).json({ success: true, data: result });
   } catch (error) {
     if (error.statusCode) return res.status(error.statusCode).json({ success: false, message: error.message });
@@ -39,11 +46,17 @@ export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ success: false, message: 'Invalid input format.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password) {
       return res.status(400).json({ success: false, message: 'Email and password are required.' });
     }
 
-    const result = await authService.emailLogin(email, password);
+    const result = await authService.emailLogin(cleanEmail, password);
     return res.json({ success: true, data: result });
   } catch (error) {
     if (error.statusCode) return res.status(error.statusCode).json({ success: false, message: error.message });

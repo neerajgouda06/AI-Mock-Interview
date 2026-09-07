@@ -29,6 +29,7 @@ export const generateToken = (user) => {
 
   // Sign (create) the token with our secret key
   return jwt.sign(payload, process.env.JWT_SECRET, {
+    algorithm: 'HS256',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d', // Token expires in 7 days
   });
 };
@@ -40,5 +41,7 @@ export const generateToken = (user) => {
  * @returns {object} - The decoded payload { id, email, iat, exp }
  */
 export const verifyToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
+  return jwt.verify(token, process.env.JWT_SECRET, {
+    algorithms: ['HS256'],
+  });
 };
