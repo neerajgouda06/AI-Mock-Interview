@@ -1,9 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Configurable model with automatic fallback list
+// Configurable model with full automatic failover chain for heavy loads
 const MODELS = [
-  process.env.GEMINI_MODEL || "gemini-2.5-flash",
-  "gemini-3.5-flash",
+  process.env.GEMINI_MODEL || "gemini-3.5-flash",
+  "gemini-3.7-flash",
+  "gemini-3.6-flash",
+  "gemini-2.5-flash",
   "gemini-3.5-flash-lite",
 ];
 
